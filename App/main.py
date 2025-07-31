@@ -15,10 +15,16 @@ def parse_orders_from_dicts(dicts):
         orders.append(order)
     return orders
 
+def filter_orders(orders):
+    return [
+        order for order in orders
+        if order.campus == "University of Virginia" and order.item_count > 0
+    ]
+
 def main():
     dicts = read_csv_as_dicts(CSV_FILE_NAME)
-    orders = parse_orders_from_dicts(dicts)
-    print(orders[0])
+    orders = filter_orders(parse_orders_from_dicts(dicts))
+    
 
 if __name__ == '__main__':
     main()
