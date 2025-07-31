@@ -17,7 +17,7 @@ class Order:
     
     def _parse_date(self, date_str):
         try:
-            return datetime.strptime(date_str.strip(), "%Y-%m-%d").date
+            return datetime.strptime(date_str.strip(), "%Y-%m-%d").date()
         except (ValueError, AttributeError):
             return None
         
