@@ -1,6 +1,7 @@
 import csv
 from models.Order import Order as Order
 from collections import defaultdict
+from datetime import date
 
 CSV_FILE_NAME = 'Data/Order List.csv'
 
@@ -16,10 +17,12 @@ def parse_orders_from_dicts(dicts):
         orders.append(order)
     return orders
 
-def filter_orders(orders):
+def filter_orders(orders, campus=None, min_item_count=None, dropoff_date=None):
     return [
         order for order in orders
-        if order.campus == "University of Virginia" and order.item_count > 0
+        if (campus is None or order.campus == campus)
+        and (min_item_count is None or order.item_count >= min_item_count)
+        and (dropoff_date is None or order.dropoff_date == dropoff_date)
     ]
 
 def group_orders_by_dropoff_date(orders):
@@ -39,10 +42,23 @@ def print_orders_by_dropoff_date(orders):
             print(order)
         print()
 
+def generate_order_list(orders):
+    for order in orders:
+        order_id = order.order_id
+        name = order.name
+        phone = order.phone
+        location = order.dropoff_location
+        print(f"{order_id}\t{name}\t{phone}\t{location}")
+
 def main():
     dicts = read_csv_as_dicts(CSV_FILE_NAME)
-    orders = filter_orders(parse_orders_from_dicts(dicts))
-    print_orders_by_dropoff_date(orders)
+    orders = parse_orders_from_dicts(dicts)
+    orders = filter_orders(orders, 
+                           campus="University of Virginia", 
+                           min_item_count=1, 
+                           dropoff_date=date(2025, 8, 21))
+    
+    generate_order_list(orders)
 
 if __name__ == '__main__':
     main()
