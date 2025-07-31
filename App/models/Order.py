@@ -6,10 +6,29 @@ class Order:
         self.campus = data['CampusName'].strip()
         self.name = data['FullName'].strip()
         self.phone = self._clean_phone(data['StudentPhone'])
+
         self.pickup_date = self._parse_date(data['PickupDate'])
-        self.pickup_location = data['PickupLocation'].strip()
+        self.pickup_location = ' '.join([
+            data['PickupLocation'].strip(), 
+            data['PickupDormRoomNumber'].strip(), 
+            data['PickupDormRoomLetter'].strip(), 
+            data['PickupAddress'].strip(), 
+            data['PickupAddressLine2'].strip(), 
+        ])
+        self.pickup_proxy_name = data['PickupPersonName'].strip(), 
+        self.pickup_proxy_phone = data['PickupPersonPhone'].strip()
+
         self.dropoff_date = self._parse_date(data['DropoffDate'])
-        self.dropoff_location = data['DropoffLocation'].strip()
+        self.dropoff_location = ' '.join([
+            data['DropoffLocation'].strip(), 
+            data['DropoffDormRoomNumber'].strip(), 
+            data['DropoffDormRoomLetter'].strip(), 
+            data['DropoffAddressLine1'].strip(), 
+            data['DropoffAddressLine2'].strip(), 
+        ])
+        self.pickup_proxy_name = data['DropoffPersonName'].strip(), 
+        self.pickup_proxy_phone = data['DropoffPersonPhone'].strip()
+
         self.item_count = self._parse_int(data['ItemCount'])
 
     def _clean_phone(self, phone):
