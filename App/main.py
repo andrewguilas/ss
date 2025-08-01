@@ -1,21 +1,8 @@
-import csv
-from models.Order import Order as Order
 from collections import defaultdict
 from datetime import date
+from services.csv_loader import get_orders_from_csv
 
 CSV_FILE_NAME = 'Data/Order List.csv'
-
-def read_csv_as_dicts(file_name):
-    with open(file_name, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        return list(reader)
-
-def parse_orders_from_dicts(dicts):
-    orders = []
-    for row in dicts:
-        order = Order(row)
-        orders.append(order)
-    return orders
 
 def filter_orders(orders, campus=None, min_item_count=None, dropoff_date=None):
     return [
@@ -52,8 +39,7 @@ def generate_order_list(orders):
         print(f"{order_id}\t{name}\t{phone}\t{location}\t{comments}")
 
 def main():
-    dicts = read_csv_as_dicts(CSV_FILE_NAME)
-    orders = parse_orders_from_dicts(dicts)
+    orders = get_orders_from_csv(CSV_FILE_NAME)
     orders = filter_orders(orders, 
                            campus="University of Virginia", 
                            min_item_count=1, 
