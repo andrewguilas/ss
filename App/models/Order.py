@@ -29,6 +29,7 @@ class Order:
         self.dropoff_proxy_name = data['DropoffPersonName'].strip(), 
         self.dropoff_proxy_phone = data['DropoffPersonPhone'].strip()
         self.item_count = self._parse_int(data['ItemCount'])
+        self.items = []
 
     def _clean_phone(self, phone):
         return ''.join(c for c in phone if c.isdigit())
@@ -54,4 +55,6 @@ class Order:
             comments.append(f"Call Proxy {self.pickup_proxy_name[0]} {self.pickup_proxy_phone}")
         if is_dropoff and self.dropoff_proxy_name and self.dropoff_proxy_phone:
             comments.append(f"Call Proxy {self.dropoff_proxy_name[0]} {self.dropoff_proxy_phone}")
+        if len(self.items) > 0:
+            comments.append(f"Items are {", ".join(self.items)}")
         return comments

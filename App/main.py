@@ -51,8 +51,6 @@ def generate_order_list(orders):
         comments = "".join(order.generate_comments(is_dropoff=True))
         print(f"{order_id}\t{name}\t{phone}\t{location}\t{comments}")
 
-        # TODO: Fix no proxy showing up in comments
-
 def main():
     dicts = read_csv_as_dicts(CSV_FILE_NAME)
     orders = parse_orders_from_dicts(dicts)
