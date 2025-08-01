@@ -1,8 +1,8 @@
 from datetime import date
 
-CAMPUS='University of Virginia'
+CAMPUS="University of Virginia"
 MOVE_DATE=date(2025, 8, 22)
 
-OPENAI_MODEL='gpt-4.1-nano'
-FILE_NAME_ORDER_LIST_INPUT_RAW = 'Data/Order List.csv'
-FILE_NAME_ORDER_LIST_OUTPUT_FORMATTED = 'Data/OrdersFormatted.csv'
+OPENAI_MODEL="gpt-4.1-nano"
+ORDER_LIST_INPUT_FILE_NAME = "Data/input/order_list_raw.csv"
+ORDER_LIST_OUTPUT_FILE_NAME = "Data/output/order_list_formatted_date.csv"

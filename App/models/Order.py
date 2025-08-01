@@ -1,40 +1,41 @@
 from datetime import datetime
-from services.openai_handler import ask_openai
+from services.openai_service import ask_openai
 
 class Order:
     def __init__(self, data):
-        self.order_id = data['OrderID'].strip()
-        self.campus = data['CampusName'].strip()
-        self.name = data['FullName'].strip()
+        self.order_id = data["OrderID"].strip()
+        self._primary_key = self.order_id
+        self.campus = data["CampusName"].strip()
+        self.name = data["FullName"].strip()
         self._pronunciation = None
-        self.phone = self._clean_phone(data['StudentPhone'])
+        self.phone = self._clean_phone(data["StudentPhone"])
 
-        self.pickup_date = self._parse_date(data['PickupDate'])
-        self.pickup_location = ' '.join([
-            data['PickupLocation'].strip(), 
-            data['PickupDormRoomNumber'].strip(), 
-            data['PickupDormRoomLetter'].strip(), 
-            data['PickupAddress'].strip(), 
-            data['PickupAddressLine2'].strip(), 
+        self.pickup_date = self._parse_date(data["PickupDate"])
+        self.pickup_location = " ".join([
+            data["PickupLocation"].strip(), 
+            data["PickupDormRoomNumber"].strip(), 
+            data["PickupDormRoomLetter"].strip(), 
+            data["PickupAddress"].strip(), 
+            data["PickupAddressLine2"].strip(), 
         ])
-        self.pickup_proxy_name = data['PickupPersonName'].strip(), 
-        self.pickup_proxy_phone = data['PickupPersonPhone'].strip()
+        self.pickup_proxy_name = data["PickupPersonName"].strip(), 
+        self.pickup_proxy_phone = data["PickupPersonPhone"].strip()
 
-        self.dropoff_date = self._parse_date(data['DropoffDate'])
-        self.dropoff_location = ' '.join([
-            data['DropoffLocation'].strip(), 
-            data['DropoffDormRoomNumber'].strip(), 
-            data['DropoffDormRoomLetter'].strip(), 
-            data['DropoffAddressLine1'].strip(), 
-            data['DropoffAddressLine2'].strip(), 
+        self.dropoff_date = self._parse_date(data["DropoffDate"])
+        self.dropoff_location = " ".join([
+            data["DropoffLocation"].strip(), 
+            data["DropoffDormRoomNumber"].strip(), 
+            data["DropoffDormRoomLetter"].strip(), 
+            data["DropoffAddressLine1"].strip(), 
+            data["DropoffAddressLine2"].strip(), 
         ])
-        self.dropoff_proxy_name = data['DropoffPersonName'].strip(), 
-        self.dropoff_proxy_phone = data['DropoffPersonPhone'].strip()
-        self.item_count = self._parse_int(data['ItemCount'])
+        self.dropoff_proxy_name = data["DropoffPersonName"].strip(), 
+        self.dropoff_proxy_phone = data["DropoffPersonPhone"].strip()
+        self.item_count = self._parse_int(data["ItemCount"])
         self.items = []
 
     def _clean_phone(self, phone):
-        return ''.join(c for c in phone if c.isdigit())
+        return "".join(c for c in phone if c.isdigit())
     
     def _parse_date(self, date_str):
         try:
