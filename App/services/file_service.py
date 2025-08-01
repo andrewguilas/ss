@@ -69,6 +69,9 @@ def write_orders_to_xlsx(file_name, header_widths, header_wrapped, rows, title, 
 
     return file_name
 
+import win32com.client as win32
+import os
+
 def convert_xlsx_to_pdf(xlsx_path, pdf_path=None):
     excel = win32.gencache.EnsureDispatch('Excel.Application')
     excel.Visible = False
@@ -79,9 +82,22 @@ def convert_xlsx_to_pdf(xlsx_path, pdf_path=None):
 
     try:
         wb = excel.Workbooks.Open(xlsx_path)
+        ws = wb.Worksheets(1)  # First worksheet; adjust if needed
+
+        ws.PageSetup.Orientation = 2  # 2 = xlLandscape
+        ws.PageSetup.Zoom = False
+        ws.PageSetup.FitToPagesWide = 1
+        ws.PageSetup.FitToPagesTall = False  # As many tall pages as needed
+
+        ws.PageSetup.LeftMargin   = excel.InchesToPoints(0.25)
+        ws.PageSetup.RightMargin  = excel.InchesToPoints(0.25)
+        ws.PageSetup.TopMargin    = excel.InchesToPoints(0.3)
+        ws.PageSetup.BottomMargin = excel.InchesToPoints(0.3)
+
+        ws.PageSetup.CenterHorizontally = True
+        ws.PageSetup.CenterVertically = False
+
         wb.ExportAsFixedFormat(0, pdf_path)
-    except Exception as e:
-        raise RuntimeError(f"Failed to export to PDF: {e}")
     finally:
         wb.Close(SaveChanges=False)
         excel.Quit()

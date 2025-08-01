@@ -18,7 +18,6 @@ def upload_order_list(file_name):
 def generate_order_list(file_name):
     orders = db_service.get_all()
     xlsx_output_file_name = order_list_service.generate_order_list(orders, file_name)
-    print(xlsx_output_file_name)
     pdf_output_file_name = file_service.convert_xlsx_to_pdf(xlsx_output_file_name)
     print(f"Successfully outputted orders to {pdf_output_file_name}")
 
