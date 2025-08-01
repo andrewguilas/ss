@@ -19,21 +19,6 @@ ORDER_LIST_HEADERS_WIDTHS = {
 }
 ORDER_LIST_HEADERS_WRAPPED = ["Location", "Items", "Comments"]
 
-def filter_orders(orders, campus=None, min_item_count=None, dropoff_date=None):
-    return [
-        order for order in orders
-        if (campus is None or order.campus == campus)
-        and (min_item_count is None or order.item_count >= min_item_count)
-        and (dropoff_date is None or order.dropoff_date == dropoff_date)
-    ]
-
-def group_orders_by_dropoff_date(orders):
-    dropoff_dates = defaultdict(list)
-    for order in orders:
-        dropoff_dates[order.dropoff_date].append(order)
-    # lambda sorts by tuple (False, False)
-    return sorted(dropoff_dates, key=lambda d: (d is None, d))
-
 def extract_order_fields(order):
     return {
         "Order ID": order.order_id,
@@ -43,7 +28,7 @@ def extract_order_fields(order):
         "Items Ct": order.item_count,
         "Items": order.items,
         "Comments": order.get_comments(is_dropoff=True),
-        "Pronunciation": order.get_pronunciation(),
+        "Pronunciation": order.pronunciation,
         "Time Loaded": " ",
         "Time Delivered": " "
     }
