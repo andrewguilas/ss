@@ -1,4 +1,5 @@
 from collections import defaultdict
+from tabulate import tabulate
 
 def filter_orders(orders, campus=None, min_item_count=None, dropoff_date=None):
     return [
@@ -15,11 +16,13 @@ def group_orders_by_dropoff_date(orders):
     # lambda sorts by tuple (False, False)
     return sorted(dropoff_dates, key=lambda d: (d is None, d))
 
-def generate_order_list(orders):
-    for order in orders:
-        order_id = order.order_id
-        name = order.name
-        phone = order.phone
-        location = order.dropoff_location
-        comments = "".join(order.generate_comments(is_dropoff=True))
-        print(f"{order_id}\t{name}\t{phone}\t{location}\t{comments}")
+def print_order_list(orders):
+    rows = [
+        [order.order_id, order.name, order.phone, order.dropoff_location, order.item_count, order.items, order.get_comments(is_dropoff=True), order.get_pronunciation()]
+        for order in orders
+    ]
+
+    print(tabulate(rows, headers=["Order ID", "Name", "Phone", "Location", "Items Ct", "Items", "Comments", "Pronunciation"]))
+
+def generate_order_list(orders, filename):
+    pass
