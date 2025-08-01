@@ -1,10 +1,12 @@
 from datetime import datetime
+from services.openai_handler import ask_openai
 
 class Order:
     def __init__(self, data):
         self.order_id = data['OrderID'].strip()
         self.campus = data['CampusName'].strip()
         self.name = data['FullName'].strip()
+        self._pronunciation = None
         self.phone = self._clean_phone(data['StudentPhone'])
 
         self.pickup_date = self._parse_date(data['PickupDate'])
@@ -58,5 +60,8 @@ class Order:
         return comments
 
     def get_pronunciation(self):
-        # TODO: Generate with OpenAI
-        return ""
+        if not self._pronunciation:
+            first_name = self.name.split(" ")[0]
+            self._pronunciation = ask_openai(f"In one word, no fluff, give me the pronunciation of the first name {first_name}")
+        
+        return self._pronunciation

@@ -18,11 +18,11 @@ def group_orders_by_dropoff_date(orders):
 
 def print_order_list(orders):
     rows = [
-        [order.order_id, order.name, order.phone, order.dropoff_location, order.item_count, order.items, order.get_comments(is_dropoff=True), order.get_pronunciation()]
+        [order.order_id, order.name, order.phone, order.dropoff_location, order.item_count, order.items, order.get_comments(is_dropoff=True), order.get_pronunciation(), " ", " "]
         for order in orders
     ]
 
-    print(tabulate(rows, headers=["Order ID", "Name", "Phone", "Location", "Items Ct", "Items", "Comments", "Pronunciation"]))
+    print(tabulate(rows, headers=["Order ID", "Name", "Phone", "Location", "Items Ct", "Items", "Comments", "Pronunciation", "Time Loaded", "Time Delivered"]))
 
 def generate_order_list(orders, filename):
     pass
