@@ -48,7 +48,10 @@ def generate_order_list(orders):
         name = order.name
         phone = order.phone
         location = order.dropoff_location
-        print(f"{order_id}\t{name}\t{phone}\t{location}")
+        comments = "".join(order.generate_comments(is_dropoff=True))
+        print(f"{order_id}\t{name}\t{phone}\t{location}\t{comments}")
+
+        # TODO: Fix no proxy showing up in comments
 
 def main():
     dicts = read_csv_as_dicts(CSV_FILE_NAME)
@@ -56,7 +59,7 @@ def main():
     orders = filter_orders(orders, 
                            campus="University of Virginia", 
                            min_item_count=1, 
-                           dropoff_date=date(2025, 8, 21))
+                           dropoff_date=date(2025, 8, 22))
     
     generate_order_list(orders)
 

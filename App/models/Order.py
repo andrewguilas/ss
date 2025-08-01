@@ -26,9 +26,8 @@ class Order:
             data['DropoffAddressLine1'].strip(), 
             data['DropoffAddressLine2'].strip(), 
         ])
-        self.pickup_proxy_name = data['DropoffPersonName'].strip(), 
-        self.pickup_proxy_phone = data['DropoffPersonPhone'].strip()
-
+        self.dropoff_proxy_name = data['DropoffPersonName'].strip(), 
+        self.dropoff_proxy_phone = data['DropoffPersonPhone'].strip()
         self.item_count = self._parse_int(data['ItemCount'])
 
     def _clean_phone(self, phone):
@@ -48,3 +47,11 @@ class Order:
         
     def __repr__(self):
         return f"Order {self.order_id} - {self.name}, {self.item_count} item(s)"
+
+    def generate_comments(self, is_pickup=False, is_dropoff=False):
+        comments = []
+        if is_pickup and self.pickup_proxy_name and self.pickup_proxy_phone:
+            comments.append(f"Call Proxy {self.pickup_proxy_name[0]} {self.pickup_proxy_phone}")
+        if is_dropoff and self.dropoff_proxy_name and self.dropoff_proxy_phone:
+            comments.append(f"Call Proxy {self.dropoff_proxy_name[0]} {self.dropoff_proxy_phone}")
+        return comments
