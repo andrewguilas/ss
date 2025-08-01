@@ -1,15 +1,15 @@
-from datetime import date
-from services.csv_loader import get_orders_from_csv
+from App.services.csv_handler import get_orders_from_csv
 from services.order_list import filter_orders, print_order_list
-
-CSV_FILE_NAME = 'Data/Order List.csv'
+from models.Order import Order as Order
+import config
 
 def main():
-    orders = get_orders_from_csv(CSV_FILE_NAME)
+    rows = get_orders_from_csv(config.FILE_NAME_ORDER_LIST_RAW)
+    orders = [Order(row) for row in rows]
     orders = filter_orders(orders, 
-                           campus="University of Virginia", 
+                           campus=config.CAMPUS, 
                            min_item_count=1, 
-                           dropoff_date=date(2025, 8, 22))
+                           dropoff_date=config.MOVE_DATE)
     
     print_order_list(orders)
 
