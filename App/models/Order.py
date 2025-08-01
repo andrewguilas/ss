@@ -16,9 +16,9 @@ class Order:
             data["PickupDormRoomNumber"].strip(), 
             data["PickupDormRoomLetter"].strip(), 
             data["PickupAddress"].strip(), 
-            data["PickupAddressLine2"].strip(), 
+            data["PickupAddressLine2"].strip()
         ])
-        self.pickup_proxy_name = data["PickupPersonName"].strip(), 
+        self.pickup_proxy_name = data["PickupPersonName"].strip()
         self.pickup_proxy_phone = data["PickupPersonPhone"].strip()
 
         self.dropoff_date = self._parse_date(data["DropoffDate"])
@@ -27,9 +27,9 @@ class Order:
             data["DropoffDormRoomNumber"].strip(), 
             data["DropoffDormRoomLetter"].strip(), 
             data["DropoffAddressLine1"].strip(), 
-            data["DropoffAddressLine2"].strip(), 
+            data["DropoffAddressLine2"].strip()
         ])
-        self.dropoff_proxy_name = data["DropoffPersonName"].strip(), 
+        self.dropoff_proxy_name = data["DropoffPersonName"].strip() 
         self.dropoff_proxy_phone = data["DropoffPersonPhone"].strip()
         self.item_count = self._parse_int(data["ItemCount"])
         self.items = []
@@ -55,14 +55,16 @@ class Order:
     def get_comments(self, is_pickup=False, is_dropoff=False):
         comments = []
         if is_pickup and self.pickup_proxy_name and self.pickup_proxy_phone:
-            comments.append(f"Call Proxy {self.pickup_proxy_name[0]} {self.pickup_proxy_phone}")
+            comments.append(f"Call Proxy {self.pickup_proxy_name} {self.pickup_proxy_phone}")
         if is_dropoff and self.dropoff_proxy_name and self.dropoff_proxy_phone:
-            comments.append(f"Call Proxy {self.dropoff_proxy_name[0]} {self.dropoff_proxy_phone}")
+            comments.append(f"Call Proxy {self.dropoff_proxy_name} {self.dropoff_proxy_phone}")
         return comments
 
     def get_pronunciation(self):
         if not self._pronunciation:
             first_name = self.name.split(" ")[0]
-            self._pronunciation = ask_openai(f"In one word, no fluff, give me the pronunciation of the first name {first_name}")
-        
+            try:
+                self._pronunciation = ask_openai(f"In one word, no fluff, give me the pronunciation of the first name {first_name}")
+            except Exception as e:
+                self._pronunciation = "N/A"
         return self._pronunciation

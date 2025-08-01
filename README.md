@@ -3,7 +3,9 @@
 This is a command-line interface where you can upload customer data (as a `.csv`) and interact with it.
 
 ## TODO
-- [ ] Generate order list as .csv
+- [x] Generate order list as .csv
+- [ ] Format spreadsheet with .xlsx
+- [ ] Output .xslx as .pdf
 - [ ] Reorder customers according to a set driving route
 - [ ] Store orders in SQL
 - [ ] Merge existing customer spreadsheet to add customers' specific items

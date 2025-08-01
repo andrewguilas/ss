@@ -1,11 +1,11 @@
-import services.csv_service as csv_service
+import services.spreadsheet_service as spreadsheet_service
 import services.order_list_service as order_list_service
 import services.db_service as db_service
 import models.order as order_model
 import config
 
 def upload_order_list(file_name):
-    rows = csv_service.get_rows_from_csv(file_name)
+    rows = spreadsheet_service.get_rows_from_csv(file_name)
     orders = [order_model.Order(row) for row in rows]
     orders = order_list_service.filter_orders(orders, 
                            campus=config.CAMPUS, 
@@ -16,10 +16,9 @@ def upload_order_list(file_name):
     print(f"Successfully inputted orders from {file_name}")
 
 def generate_order_list(file_name):
-    file_name = file_name.replace("date", str(config.MOVE_DATE))
     orders = db_service.get_all()
-    order_list_service.generate_order_list(orders, file_name)
-    print(f"Successfully outputted orders to {file_name}")
+    output_file_name = order_list_service.generate_order_list(orders, file_name)
+    print(f"Successfully outputted orders to {output_file_name}")
 
 def main():
     upload_order_list(config.ORDER_LIST_INPUT_FILE_NAME)
