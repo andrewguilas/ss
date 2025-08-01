@@ -1,6 +1,6 @@
 from openai import OpenAI
 from dotenv import load_dotenv
-import config
+import app.config as config
 
 load_dotenv()
 client = OpenAI()

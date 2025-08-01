@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Integer, Date, Text
-from database import Base
 from datetime import datetime
-from services.openai_service import ask_openai
+from app.database import Base
+from app.services.openai_service import ask_openai
 
 class Order(Base):
     __tablename__ = 'orders'

@@ -1,8 +1,8 @@
-import services.file_service as file_service
-import services.order_list_service as order_list_service
-import services.db_service as db_service
-import models.order as order_model
-import config
+import app.services.file_service as file_service
+import app.services.order_list_service as order_list_service
+import app.services.db_service as db_service
+import app.models.order as order_model
+import app.config as config
 import sys
 
 def upload_order_list(file_name):
