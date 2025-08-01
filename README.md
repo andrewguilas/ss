@@ -4,7 +4,7 @@ This is a command-line interface where you can upload customer data (as a `.csv`
 
 ## TODO
 - [x] Generate order list as .csv
-- [ ] Format spreadsheet with .xlsx
+- [x] Format spreadsheet with .xlsx
 - [ ] Output .xslx as .pdf
 - [ ] Reorder customers according to a set driving route
 - [ ] Store orders in SQL

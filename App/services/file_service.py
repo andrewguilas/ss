@@ -3,6 +3,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
 from datetime import date
+import win32com.client as win32
+import os
 
 def get_rows_from_csv(file_name):
     with open(file_name, newline="") as csvfile:
@@ -61,8 +63,27 @@ def write_orders_to_xlsx(file_name, header_widths, header_wrapped, rows, title, 
         try:
             wb.save(file_name)
         except PermissionError:
-            file_name = f"{original_file_name.replace(".xlsx", "")} ({attempt}).xlsx" 
+            file_name = os.path.splitext(original_file_name)[0] + f" ({attempt}).xlsx"
         else:
             break
 
     return file_name
+
+def convert_xlsx_to_pdf(xlsx_path, pdf_path=None):
+    excel = win32.gencache.EnsureDispatch('Excel.Application')
+    excel.Visible = False
+
+    xlsx_path = os.path.abspath(xlsx_path)
+    if not pdf_path:
+        pdf_path = os.path.splitext(xlsx_path)[0] + ".pdf"
+
+    try:
+        wb = excel.Workbooks.Open(xlsx_path)
+        wb.ExportAsFixedFormat(0, pdf_path)
+    except Exception as e:
+        raise RuntimeError(f"Failed to export to PDF: {e}")
+    finally:
+        wb.Close(SaveChanges=False)
+        excel.Quit()
+
+    return pdf_path

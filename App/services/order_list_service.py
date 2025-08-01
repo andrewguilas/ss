@@ -1,6 +1,6 @@
 from collections import defaultdict
 from tabulate import tabulate
-import services.spreadsheet_service as spreadsheet_service
+import services.file_service as file_service
 import config
 import utils.date_utils as date_utils
 import utils.phone_utils as phone_utils
@@ -59,7 +59,7 @@ def generate_order_list(orders, file_name):
         ["Automatically generated"],
     ]
 
-    output_file_name = spreadsheet_service.write_orders_to_xlsx(
+    xlsx_output_file_name = file_service.write_orders_to_xlsx(
         file_name,
         ORDER_LIST_HEADERS_WIDTHS,
         ORDER_LIST_HEADERS_WRAPPED,
@@ -68,4 +68,4 @@ def generate_order_list(orders, file_name):
         footer_rows=footer_rows
     )
 
-    return output_file_name
+    return xlsx_output_file_name
