@@ -2,7 +2,6 @@ import csv
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from openpyxl.utils import get_column_letter
-from datetime import date
 import win32com.client as win32
 import os
 
