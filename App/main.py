@@ -1,48 +1,29 @@
-import csv
-from models.Order import Order as Order
-from collections import defaultdict
+import services.file_service as file_service
+import services.order_list_service as order_list_service
+import services.db_service as db_service
+import models.order as order_model
+import config
 
-CSV_FILE_NAME = 'Data/Order List.csv'
-
-def read_csv_as_dicts(file_name):
-    with open(file_name, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        return list(reader)
-
-def parse_orders_from_dicts(dicts):
-    orders = []
-    for row in dicts:
-        order = Order(row)
-        orders.append(order)
-    return orders
-
-def filter_orders(orders):
-    return [
-        order for order in orders
-        if order.campus == "University of Virginia" and order.item_count > 0
-    ]
-
-def group_orders_by_dropoff_date(orders):
-    dropoff_dates = defaultdict(list)
+def upload_order_list(file_name):
+    rows = file_service.get_rows_from_csv(file_name)
+    orders = [order_model.Order(row) for row in rows]
+    orders = order_list_service.filter_orders(orders, 
+                           campus=config.CAMPUS, 
+                           min_item_count=1, 
+                           dropoff_date=config.MOVE_DATE)
     for order in orders:
-        dropoff_dates[order.dropoff_date].append(order)
-    return dropoff_dates
+        db_service.update(order)
+    print(f"Successfully inputted orders from {file_name}")
 
-def print_orders_by_dropoff_date(orders):
-    dropoff_dates = group_orders_by_dropoff_date(orders)
-
-    # lambda sorts by tuple (False, False)
-    for dropoff_date in sorted(dropoff_dates, key=lambda d: (d is None, d)):
-        orders = dropoff_dates[dropoff_date]
-        print(f"{dropoff_date} - {len(orders)} order(s)")
-        for order in orders:
-            print(order)
-        print()
+def generate_order_list(file_name):
+    orders = db_service.get_all()
+    xlsx_output_file_name = order_list_service.generate_order_list(orders, file_name)
+    pdf_output_file_name = file_service.convert_xlsx_to_pdf(xlsx_output_file_name)
+    print(f"Successfully outputted orders to {pdf_output_file_name}")
 
 def main():
-    dicts = read_csv_as_dicts(CSV_FILE_NAME)
-    orders = filter_orders(parse_orders_from_dicts(dicts))
-    print_orders_by_dropoff_date(orders)
+    upload_order_list(config.ORDER_LIST_INPUT_FILE_NAME)
+    generate_order_list(config.ORDER_LIST_OUTPUT_FILE_NAME)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
