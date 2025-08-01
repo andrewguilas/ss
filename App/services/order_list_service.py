@@ -36,20 +36,18 @@ def print_order_list(orders):
     rows = [list(extract_order_fields(order).values()) for order in orders]
     print(tabulate(rows, headers=ORDER_LIST_HEADERS_WIDTHS))
 
-def generate_order_list(orders, file_name):
+def generate_order_list(orders, file_name, date):
     rows = [extract_order_fields(order) for order in orders]
 
     footer_rows = [
         ["Automatically generated"],
     ]
 
-    xlsx_output_file_name = file_service.write_orders_to_xlsx(
+    file_service.write_orders_to_xlsx(
         file_name,
         ORDER_LIST_HEADERS_WIDTHS,
         ORDER_LIST_HEADERS_WRAPPED,
         rows,
-        title=f"{date_utils.format_date_short(config.MOVE_DATE)} - Truck 1/2 (Andrew) - {len(orders)} orders", # TODO: Implement trucks
+        title=f"{date_utils.format_date_short(date)} - Truck 1/2 (Andrew) - {len(orders)} orders", # TODO: Implement trucks
         footer_rows=footer_rows
     )
-
-    return xlsx_output_file_name

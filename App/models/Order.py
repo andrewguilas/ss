@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Integer, Date, Text
-from datetime import datetime
 from app.database import Base
 from app.services.openai_service import ask_openai
+from app.utils.date_utils import parse_date
 
 class Order(Base):
     __tablename__ = 'orders'
@@ -32,7 +32,7 @@ class Order(Base):
         self.phone = self._clean_phone(data["StudentPhone"])
         self.pronunciation = self.fetch_pronunciation()
 
-        self.pickup_date = self._parse_date(data["PickupDate"])
+        self.pickup_date = parse_date(data["PickupDate"])
         self.pickup_location = " ".join([
             data["PickupLocation"].strip(), 
             data["PickupDormRoomNumber"].strip(), 
@@ -43,7 +43,7 @@ class Order(Base):
         self.pickup_proxy_name = data["PickupPersonName"].strip()
         self.pickup_proxy_phone = data["PickupPersonPhone"].strip()
 
-        self.dropoff_date = self._parse_date(data["DropoffDate"])
+        self.dropoff_date = parse_date(data["DropoffDate"])
         self.dropoff_location = " ".join([
             data["DropoffLocation"].strip(), 
             data["DropoffDormRoomNumber"].strip(), 
@@ -59,12 +59,6 @@ class Order(Base):
 
     def _clean_phone(self, phone):
         return "".join(c for c in phone if c.isdigit())
-    
-    def _parse_date(self, date_str):
-        try:
-            return datetime.strptime(date_str.strip(), "%Y-%m-%d").date()
-        except (ValueError, AttributeError):
-            return None
         
     def _parse_int(self, value):
         try:

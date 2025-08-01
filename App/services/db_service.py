@@ -1,6 +1,7 @@
 from sqlalchemy.exc import SQLAlchemyError
 from app.database import SessionLocal, engine
 from app.models.order import Order
+import app.config as config
 
 def get_session():
     return SessionLocal()
@@ -30,7 +31,7 @@ def get_all_orders():
     finally:
         close_session(session)
 
-def filter_orders(campus=None, min_item_count=None, dropoff_date=None):
+def filter_orders(campus=None, min_item_count=None, date=None):
     """Query Orders with optional filters."""
     session = get_session()
     try:
@@ -39,8 +40,8 @@ def filter_orders(campus=None, min_item_count=None, dropoff_date=None):
             query = query.filter(Order.campus == campus)
         if min_item_count is not None:
             query = query.filter(Order.item_count >= min_item_count)
-        if dropoff_date is not None:
-            query = query.filter(Order.dropoff_date == dropoff_date)
+        if date is not None:
+            query = query.filter(Order.pickup_date == date or Order.dropoff_date == date)
         return query.all()
     finally:
         close_session(session)
