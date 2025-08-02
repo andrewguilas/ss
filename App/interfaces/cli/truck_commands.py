@@ -23,5 +23,14 @@ def remove_truck(subargs):
     except Exception as e:
         print(f"Failed to remove truck {truck_id}: {e}")
 
-def list_trucks():
-    pass
+def list_trucks(subargs):
+    try:
+        trucks = truck_service.list_trucks()
+        if not trucks:
+            print("No trucks found")
+            return
+        
+        for truck in trucks:
+            print(truck)
+    except Exception as e:
+        print(f"Failed to list trucks: {e}")
