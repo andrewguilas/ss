@@ -33,7 +33,7 @@ class Order(Base):
         self.order_id = data["OrderID"].strip()
         self.campus = data["CampusName"].strip()
         self.name = data["FullName"].strip()
-        self.phone = self._clean_phone(data["StudentPhone"])
+        self.phone = self._format_phone(data["StudentPhone"])
         self.pronunciation = self._fetch_pronunciation()
         self.comments = ". ".join(self._get_comments())
 
@@ -64,9 +64,23 @@ class Order(Base):
         self.truck_number = 1
         self.driver = "Driver TBD"
 
-    def _clean_phone(self, phone):
-        return "".join(c for c in phone if c.isdigit())
+    def format_phone_number(raw_phone):
+        # Format a US phone number as (xxx) xxx-xxxx
+
+        digits = ''.join(filter(str.isdigit, str(raw_phone))) # Remove all non-digit characters
         
+        if digits.startswith('1') and len(digits) == 11: # Remove leading country code '1'
+            digits = digits[1:]
+
+        if len(digits) != 10:
+            return raw_phone
+
+        area_code = digits[:3]
+        prefix = digits[3:6]
+        line_number = digits[6:]
+
+        return f"({area_code}) {prefix}-{line_number}"
+
     def _parse_int(self, value):
         try:
             return int(value)

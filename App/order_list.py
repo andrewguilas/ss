@@ -2,7 +2,6 @@ from tabulate import tabulate
 import app.services.file_service as file_service
 import app.services.db_service as db_service
 import app.utils.date_utils as date_utils
-import app.utils.phone_utils as phone_utils
 import app.models.order as order_model
 import app.config as config
 import os
@@ -18,7 +17,7 @@ def _extract_order_fields(order):
     return {
         "Order ID": order.order_id,
         "Name": order.name,
-        "Phone": phone_utils.format_phone_number(order.phone),
+        "Phone": order.phone,
         "Location": order.dropoff_location,
         "Items Ct": order.item_count,
         "Items": order.items,
