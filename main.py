@@ -1,5 +1,5 @@
 import sys
-import app.order_list as order_list
+import app.services.order_list as order_list
 from app.utils.date_utils import parse_date
 
 # Order List
@@ -79,12 +79,6 @@ def main():
                 return
             truck_number = int(args[1]) if len(args) > 1 else 1
             print_order_list(date, truck_number)
-
-        case "set_truck":
-            if len(args) < 2:
-                print("Usage: set_truck <order_id> <truck_number> <driver>")
-                return
-            set_truck(args[0], int(args[1]), args[2])
 
         case "help":
             print("Commands:")

@@ -1,9 +1,11 @@
-from sqlalchemy import Column, String, Integer, Date, Text, ForeignKey, JSON
+from sqlalchemy import Column, String, Integer, Date, Text, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base
-from app.services.openai_service import ask_openai
+from app.services.infra.openai import ask_openai
 from app.utils.date_utils import parse_date
+from app.models.route import Route
 import app.config as config
+import json
 
 class Order(Base):
     __tablename__ = 'orders'
@@ -13,7 +15,7 @@ class Order(Base):
     name = Column(String(64))
     phone = Column(String(16))
     pronunciation = Column(String(64))
-    comments = Column(JSON, default=list)
+    comments = Column(String) # Store serialized list as string
 
     pickup_date = Column(Date, index=True)
     pickup_location = Column(Text)
@@ -26,10 +28,10 @@ class Order(Base):
     dropoff_proxy_phone = Column(String(16))
 
     item_count = Column(Integer)
-    items = Column(JSON, default=list)
+    items = Column(String) # Store serialized list as string
     
     route_id = Column(Integer, ForeignKey("routes.route_id", ondelete="SET NULL"), nullable=True)
-    route = relationship("Route", back_populates="orders")
+    route = relationship(Route, back_populates="orders")
 
     def __init__(self, data):
         self.order_id = data["OrderID"].strip()
@@ -48,7 +50,7 @@ class Order(Base):
             data["PickupAddressLine2"].strip()
         ]))
         self.pickup_proxy_name = data["PickupPersonName"].strip()
-        self.pickup_proxy_phone = data["PickupPersonPhone"].strip()
+        self.pickup_proxy_phone = data["PickupPersonPhone"] and self._format_phone(data["PickupPersonPhone"])
 
         self.dropoff_date = parse_date(data["DropoffDate"])
         self.dropoff_location = " ".join(filter(None, [
@@ -59,10 +61,10 @@ class Order(Base):
             data["DropoffAddressLine2"].strip()
         ]))
         self.dropoff_proxy_name = data["DropoffPersonName"].strip() 
-        self.dropoff_proxy_phone = data["DropoffPersonPhone"].strip()
+        self.dropoff_proxy_phone = data["DropoffPersonPhone"] and self._format_phone(data["DropoffPersonPhone"])
 
         self.item_count = self._parse_int(data["ItemCount"])
-        self.items = []
+        self.items = json.dumps([])
 
     def _format_phone(self, raw_phone):
         # Format a US phone number as (xxx) xxx-xxxx
@@ -103,7 +105,7 @@ class Order(Base):
             comments.append(f"Call Proxy {self.pickup_proxy_name} {self.pickup_proxy_phone}.")
         if config.IS_DROPOFF_SEASON and self.dropoff_proxy_name and self.dropoff_proxy_phone:
             comments.append(f"Call Proxy {self.dropoff_proxy_name} {self.dropoff_proxy_phone}.")
-        return comments
+        return comments and "\n".join(comments) or ""
 
     def set_truck(self, truck_number, driver):
         self.truck_number = truck_number
