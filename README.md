@@ -14,6 +14,7 @@ This is a command-line interface where you can upload customer data (as a `.csv`
 - [x] Add Truck model with truck_id, truck_number, truck_driver
 - [ ] Add truck & route commands
 - [ ] Add route order
+- [ ] Create tests
 - [ ] Merge existing customer spreadsheet to add customers' specific items
 
 ### Stage 2 - Discord App (due 8/6)
@@ -54,5 +55,3 @@ OPENAI_API_KEY=...
 `generate_order_list(pdf_file_name, date)`
 
 `print_order_list(date, truck_number)`
-
-`set_truck(order_id, truck_number, driver)`

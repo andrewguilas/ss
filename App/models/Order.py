@@ -110,8 +110,3 @@ class Order(Base):
         if config.IS_DROPOFF_SEASON and self.dropoff_proxy_name and self.dropoff_proxy_phone:
             comments.append(f"Call Proxy {self.dropoff_proxy_name} {self.dropoff_proxy_phone}.")
         return comments and "\n".join(comments) or ""
-
-    def set_truck(self, truck_number, driver):
-        self.truck_number = truck_number
-        self.driver = driver
-
