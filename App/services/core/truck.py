@@ -1,6 +1,7 @@
 from app.models.truck import Truck
 import app.services.infra.db as db_service
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 
 def add_truck(model="", comments=""):
     new_truck = Truck(model, comments)
@@ -35,6 +36,6 @@ def remove_truck(truck_id):
 def list_trucks():
     session = db_service.get_session()
     try:
-        return session.query(Truck).order_by(Truck.truck_id).all()
+        return session.query(Truck).options(joinedload(Truck.routes)).order_by(Truck.truck_id).all()
     finally:
         session.close()
