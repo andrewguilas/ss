@@ -2,7 +2,8 @@ CAMPUS="University of Virginia"
 IS_DROPOFF_SEASON = True
 
 OPENAI_MODEL="gpt-4.1-nano"
-SQLALCHEMY_DATABASE_URL="sqlite:///./data/db/orders.db"
+DB_FILE_NAME="data/db/database.db"
+SQLALCHEMY_DATABASE_URL=f"sqlite:///./{DB_FILE_NAME}"
 
 PDF_ORIENTATION = 2 # landscape
 PDF_LEFT_MARGIN = 0.25

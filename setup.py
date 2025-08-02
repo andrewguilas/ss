@@ -1,5 +1,8 @@
+import os
+import shutil
 from app.database import Base, engine
 from sqlalchemy import event
+import app.config as config
 
 # Import models to initialize
 from app.models.truck import Truck
@@ -12,8 +15,24 @@ def enable_sqlite_foreign_keys(dbapi_connection, connection_record):
     cursor.execute("PRAGMA foreign_keys=ON;")
     cursor.close()
 
+def delete_file_if_exists(path):
+    if os.path.exists(path):
+        os.remove(path)
+        print(f"Deleted file: {path}")
+
+def delete_pycache_folders(root_path):
+    for dirpath, dirnames, _ in os.walk(root_path):
+        if "__pycache__" in dirnames:
+            pycache_path = os.path.join(dirpath, "__pycache__")
+            shutil.rmtree(pycache_path)
+            print(f"Deleted {pycache_path}")
+
 def init_db():
+    delete_file_if_exists(config.DB_FILE_NAME)
+    delete_pycache_folders("app/")
     Base.metadata.create_all(bind=engine)
+    print("Database initialized")
+    print("Setup complete")
 
 if __name__ == "__main__":
     init_db()
