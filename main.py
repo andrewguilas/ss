@@ -9,12 +9,12 @@ def upload_order_list(csv_file_name):
     orders_count = order_list.upload_order_list(csv_file_name)
     print(f"Successfully inputted and saved {orders_count} order(s) from {csv_file_name}")
 
-def print_order_list(date, truck_number=1):
-    order_list.print_order_list(date, truck_number)
+def print_order_list(date):
+    order_list.print_order_list(date)
 
-def generate_order_list(pdf_file_name, date, truck_number=1):
+def generate_order_list(pdf_file_name, date):
     print(f"Generating order list for {date} to {pdf_file_name}...")
-    orders_count = order_list.generate_order_list(pdf_file_name, date, truck_number)
+    orders_count = order_list.generate_order_list(pdf_file_name, date)
     print(f"Successfully generated order list with {orders_count} order(s) for {date} in {pdf_file_name}")
 
 # Truck
@@ -65,8 +65,8 @@ def main():
             except Exception:
                 print("Invalid date format. Use YYYY-MM-DD.")
                 return
-            truck_number = int(args[2]) if len(args) > 2 else 1
-            generate_order_list(args[0], date, truck_number)
+            # truck_number = int(args[2]) if len(args) > 2 else 1
+            generate_order_list(args[0], date)
 
         case "print":
             if len(args) < 1:
@@ -77,8 +77,8 @@ def main():
             except Exception:
                 print("Invalid date format. Use YYYY-MM-DD.")
                 return
-            truck_number = int(args[1]) if len(args) > 1 else 1
-            print_order_list(date, truck_number)
+            # truck_number = int(args[1]) if len(args) > 1 else 1
+            print_order_list(date)
 
         case "help":
             print("Commands:")

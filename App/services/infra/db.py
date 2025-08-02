@@ -32,7 +32,7 @@ def get_all_orders():
 
 from sqlalchemy import or_
 
-def get_orders(order_id=None, campus=None, min_item_count=1, date=None, truck_number=None):
+def get_orders(order_id=None, campus=None, min_item_count=1, date=None):
     """Query Orders with optional filters."""
     session = get_session()
     try:
@@ -47,8 +47,6 @@ def get_orders(order_id=None, campus=None, min_item_count=1, date=None, truck_nu
             filters.append(Order.item_count >= min_item_count)
         if date:
             filters.append(or_(Order.pickup_date == date, Order.dropoff_date == date))
-        if truck_number is not None:
-            filters.append(Order.truck_number == truck_number)
 
         return query.filter(*filters).all()
     finally:

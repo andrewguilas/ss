@@ -29,14 +29,14 @@ def _extract_order_fields(order):
 
 def _generate_title(date, orders):
     date_text = date_utils.format_date_short(date)
-    truck_number = orders[0].truck_number
-    max_truck_number = max([order.truck_number for order in orders])
+    truck_number = 1 # orders[0].truck_number
+    max_truck_number = 1 # max([order.truck_number for order in orders])
     orders_count = len(orders)
-    driver = orders[0].driver
+    driver = "Andrew" # orders[0].driver
     return f"{date_text} - Truck {truck_number}/{max_truck_number} ({driver}) - {orders_count} order(s)"
 
-def print_order_list(date, truck_number):
-    orders = db_service.get_orders(campus=config.CAMPUS, min_item_count=1, date=date, truck_number=truck_number)
+def print_order_list(date):
+    orders = db_service.get_orders(campus=config.CAMPUS, min_item_count=1, date=date)
     if len(orders) == 0:
         print("No orders found")
         return
@@ -45,9 +45,9 @@ def print_order_list(date, truck_number):
     print(_generate_title(date, orders))
     print(tabulate(rows, headers=config.ORDER_LIST_HEADERS_WIDTHS))
 
-def generate_order_list(pdf_file_name, date, truck_number):
+def generate_order_list(pdf_file_name, date):
     xlsx_file_name = os.path.splitext(pdf_file_name)[0] + ".xlsx"
-    orders = db_service.get_orders(campus=config.CAMPUS, min_item_count=1, date=date, truck_number=truck_number)
+    orders = db_service.get_orders(campus=config.CAMPUS, min_item_count=1, date=date)
     if len(orders) == 0:
         print("No orders found")
         return
