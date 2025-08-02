@@ -24,3 +24,21 @@ def add_route(date, driver_name=None, comments=None, truck_id=None):
         raise
     finally:
         session.close()
+
+from sqlalchemy.orm import joinedload
+
+def list_routes(date=None):
+    session = db_service.get_session()
+    try:
+        query = session.query(Route).options(
+            # lazy-loading by default
+            # when you query Route, only Route columns are loaded, not Route.truck or Route.orders
+            # fix by eagerly loading relationships while session is still open
+            joinedload(Route.truck),   
+            joinedload(Route.orders)
+        )
+        if date:
+            query = query.filter(Route.date == date)
+        return query.order_by(Route.route_id).all()
+    finally:
+        session.close()

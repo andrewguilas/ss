@@ -27,8 +27,24 @@ def remove_route(subargs):
     pass
 
 def list_routes(subargs):
-    # date=any
-    pass
+    date = None
+    if len(subargs) > 0:
+        try:
+            date = parse_date(subargs[0])
+        except Exception:
+            print("Invalid date format. Use YYYY-MM-DD.")
+            return
+    
+    try:
+        routes = route_service.list_routes(date=date)
+        if not routes:
+            print("No routes found")
+            return
+        
+        for route in routes:
+            print(route)
+    except Exception as e:
+        print(f"Failed to list routes: {e}")
 
 def assign_route_to_truck(subargs):
     # route_idm, truck_id
