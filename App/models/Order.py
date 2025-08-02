@@ -15,12 +15,12 @@ class Order(Base):
     pronunciation = Column(String(64))
     comments = Column(Text)
 
-    pickup_date = Column(Date)
+    pickup_date = Column(Date, index=True)
     pickup_location = Column(Text)
     pickup_proxy_name = Column(String(64))
     pickup_proxy_phone = Column(String(16))
 
-    dropoff_date = Column(Date)
+    dropoff_date = Column(Date, index=True)
     dropoff_location = Column(Text)
     dropoff_proxy_name = Column(String(64))
     dropoff_proxy_phone = Column(String(16))
