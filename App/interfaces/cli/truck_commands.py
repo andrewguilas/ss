@@ -10,8 +10,18 @@ def add_truck(subargs):
     except Exception as e:
         print(f"Failed to add truck: {e}")
 
-def remove_truck(truck_id):
-    pass
+def remove_truck(subargs):
+    if len(subargs) == 0:
+        print("Usage: truck remove <truck_id>")
+        return
+
+    truck_id = subargs[0]
+
+    try:
+        truck_service.remove_truck(truck_id=truck_id)
+        print(f"Successfully removed truck {truck_id}")
+    except Exception as e:
+        print(f"Failed to remove truck {truck_id}: {e}")
 
 def assign_truck_to_route(truck_id, route_id):
     pass

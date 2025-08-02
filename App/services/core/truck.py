@@ -16,3 +16,18 @@ def add_truck(model="", comments=""):
         raise
     finally:
         session.close()
+
+def remove_truck(truck_id):
+    session = db_service.get_session()
+    try:
+        truck = session.query(Truck).filter(Truck.truck_id == truck_id).first()
+        if not truck:
+            raise ValueError(f"Truck with ID {truck_id} not found")
+
+        session.delete(truck)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
