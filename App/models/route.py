@@ -10,8 +10,8 @@ class Route(Base):
     driver_name = Column(String(200), nullable=True)
     comments = Column(String(512), nullable=True)
 
-    truck = relationship("Truck", back_populates="routes")
     truck_id = Column(Integer, ForeignKey("trucks.truck_id", ondelete="SET NULL"), nullable=True)
+    truck = relationship("Truck", back_populates="routes")
 
     orders = relationship("Order", back_populates="route")
 
@@ -25,4 +25,6 @@ class Route(Base):
         self.truck = truck
 
     def __repr__(self):
-        return f"Route {self.route_id} - {self.truck}, {self.driver_name}, {len(self.orders)} order(s)"
+        truck_model = self.truck.model if self.truck else "Truck TBD"
+        driver_name = self.driver_name or "Driver TBD"
+        return f"Route {self.route_id} - {truck_model}, {driver_name}, {len(self.orders)} order(s)"
