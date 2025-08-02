@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey, UniqueConstraint, Date
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -6,6 +6,7 @@ class Route(Base):
     __tablename__ = 'routes'
 
     route_id = Column(Integer, primary_key=True)
+    date = Column(Date, nullable=False)
     driver_name = Column(String(200), nullable=True)
     comments = Column(String(512), nullable=True)
 
@@ -13,6 +14,10 @@ class Route(Base):
     truck_id = Column(Integer, ForeignKey("trucks.truck_id", ondelete="SET NULL"), nullable=True)
 
     orders = relationship("Order", back_populates="route")
+
+    __table_args__ = (
+        UniqueConstraint('truck_id', 'date', name='uq_truck_date'),
+    )
 
     def __init__(self, driver_name="", comments="", truck=None):
         self.driver_name = driver_name.strip()
