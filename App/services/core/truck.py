@@ -1,4 +1,5 @@
 from app.models.truck import Truck
+from app.models.route import Route
 import app.services.infra.db as db_service
 from sqlalchemy.exc import SQLAlchemyError
 

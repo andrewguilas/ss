@@ -23,8 +23,5 @@ def remove_truck(subargs):
     except Exception as e:
         print(f"Failed to remove truck {truck_id}: {e}")
 
-def assign_truck_to_route(truck_id, route_id):
-    pass
-
 def list_trucks():
     pass
