@@ -1,5 +1,4 @@
 from app.models.truck import Truck
-from app.models.route import Route
 import app.services.infra.db as db_service
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -30,5 +29,12 @@ def remove_truck(truck_id):
     except Exception:
         session.rollback()
         raise
+    finally:
+        session.close()
+
+def list_trucks():
+    session = db_service.get_session()
+    try:
+        return session.query(Truck).order_by(Truck.truck_id).all()
     finally:
         session.close()

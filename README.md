@@ -16,6 +16,7 @@ This is a command-line interface where you can upload customer data (as a `.csv`
     - [x] Add truck commands
     - [ ] Add route commands
     - [ ] Add order commands
+- [ ] Remove most db.py methods and just use session
 - [ ] Create tests
 - [ ] Merge existing customer spreadsheet to add customers' specific items
 

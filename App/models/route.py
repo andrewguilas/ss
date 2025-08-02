@@ -22,9 +22,10 @@ class Route(Base):
         UniqueConstraint('truck_id', 'date', name='uq_truck_date'),
     )
 
-    def __init__(self, driver_name="", comments="", truck=None):
-        self.driver_name = driver_name.strip()
-        self.comments = comments.strip()
+    def __init__(self, date, driver_name="", comments="", truck=None):
+        self.date = date
+        self.driver_name = driver_name.strip() if driver_name else ""
+        self.comments = comments.strip() if comments else ""
         self.truck = truck
 
     def __repr__(self):

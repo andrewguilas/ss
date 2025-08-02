@@ -35,13 +35,13 @@ def main():
         elif command == "route":
             match subcommand:
                 case "add":
-                    print("route add not implemented yet")
+                    route_commands.add_route(subargs)
                 case "remove":
-                    print("route remove not implemented yet")
+                    route_commands.remove_route(subargs)
                 case "list":
-                    print("route list not implemented yet")
+                    route_commands.list_routes(subargs)
                 case "assign":
-                    print("route assign not implemented yet")
+                    route_commands.assign_route_to_truck(subargs)
                 case _:
                     print(f"Unknown route subcommand: {subcommand}")
 
