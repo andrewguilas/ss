@@ -1,7 +1,6 @@
 from sqlalchemy.exc import SQLAlchemyError
 from app.database import SessionLocal, engine
 from app.models.order import Order
-import app.config as config
 
 def get_session():
     return SessionLocal()

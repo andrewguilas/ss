@@ -1,25 +1,16 @@
-import app.services.file_service as file_service
-import app.services.order_list_service as order_list_service
-import app.services.db_service as db_service
-import app.models.order as order_model
+import app.order_list as order_list
 from app.utils.date_utils import parse_date 
-import app.config as config
 import sys
 
 def upload_order_list(file_name):
     print(f"Inputting orders from {file_name}...")
-    rows = file_service.get_rows_from_csv(file_name)
-    for row in rows:
-        order = order_model.Order(row)
-        db_service.add_or_update_order(order)
-    print(f"Successfully inputted and saved {len(row)} order(s) from {file_name}")
+    orders_count = order_list.upload_order_list(file_name)
+    print(f"Successfully inputted and saved {orders_count} order(s) from {file_name}")
 
 def generate_order_list(file_name, date):
     print(f"Generating order list for {date} to {file_name}...")
-    orders = db_service.filter_orders(campus=config.CAMPUS, min_item_count=1, date=date)
-    order_list_service.generate_order_list(orders, file_name, date)
-    pdf_output_file_name = file_service.convert_xlsx_to_pdf(file_name)
-    print(f"Successfully generated order list with {len(orders)} order(s) for {date} in {pdf_output_file_name}")
+    orders_count = order_list.generate_order_list(file_name, date)
+    print(f"Successfully generated order list with {orders_count} order(s) for {date} in {file_name}")
 
 def main():
     command = sys.argv[1].lower()

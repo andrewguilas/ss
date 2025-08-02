@@ -15,3 +15,11 @@ This is a command-line interface where you can upload customer data (as a `.csv`
 - [ ] Add customers' photos
 - [ ] Store data with an online db
 - [ ] Add an easy way to bulk message customers with Google Voice or something else
+
+## API
+
+### app/order_list
+
+`upload_order_list(csv_file_name)`
+
+`generate_order_list(pdf_file_name, date)`
