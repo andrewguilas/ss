@@ -1,7 +1,7 @@
 from app.database import Base, engine
 from sqlalchemy import event
 
-# Import all models here
+# Import models to initialize
 from app.models.truck import Truck
 from app.models.route import Route
 from app.models.order import Order

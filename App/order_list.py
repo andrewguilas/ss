@@ -21,7 +21,7 @@ def _extract_order_fields(order):
         "Location": order.dropoff_location,
         "Items Ct": order.item_count,
         "Items": order.items,
-        "Comments": order.comments,
+        "Comments": "\n".join(order.comments),
         "Pronunciation": order.pronunciation,
         "Time Loaded": " ",
         "Time Delivered": " "

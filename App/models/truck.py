@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Text
+from sqlalchemy import Column, String, Integer, Text, JSON
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -7,7 +7,7 @@ class Truck(Base):
 
     truck_id = Column(Integer, primary_key=True)
     model = Column(String(64), nullable=True)  # Ex: "U-Haul 15'"
-    comments = Column(Text, nullable=True)
+    comments = Column(JSON, default=list)
 
     routes = relationship("Route", back_populates="truck")
 

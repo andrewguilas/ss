@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, UniqueConstraint, Date
+from sqlalchemy import Column, String, Integer, ForeignKey, UniqueConstraint, Date, JSON
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -8,7 +8,7 @@ class Route(Base):
     route_id = Column(Integer, primary_key=True)
     date = Column(Date, nullable=False)
     driver_name = Column(String(200), nullable=True)
-    comments = Column(String(512), nullable=True)
+    comments = Column(JSON, default=list)
 
     truck_id = Column(Integer, ForeignKey("trucks.truck_id", ondelete="SET NULL"), nullable=True)
     truck = relationship("Truck", back_populates="routes")

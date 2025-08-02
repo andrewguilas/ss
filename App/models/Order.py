@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Date, Text, ForeignKey
+from sqlalchemy import Column, String, Integer, Date, Text, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from app.database import Base
 from app.services.openai_service import ask_openai
@@ -13,7 +13,7 @@ class Order(Base):
     name = Column(String(64))
     phone = Column(String(16))
     pronunciation = Column(String(64))
-    comments = Column(Text)
+    comments = Column(JSON, default=list)
 
     pickup_date = Column(Date, index=True)
     pickup_location = Column(Text)
@@ -26,7 +26,7 @@ class Order(Base):
     dropoff_proxy_phone = Column(String(16))
 
     item_count = Column(Integer)
-    items = Column(Text, default="[]") # store items as JSON text
+    items = Column(JSON, default=list)
     
     route_id = Column(Integer, ForeignKey("routes.route_id", ondelete="SET NULL"), nullable=True)
     route = relationship("Route", back_populates="orders")
@@ -37,7 +37,7 @@ class Order(Base):
         self.name = data["FullName"].strip()
         self.phone = self._format_phone(data["StudentPhone"])
         self.pronunciation = self._fetch_pronunciation()
-        self.comments = ". ".join(self._get_comments())
+        self.comments = self._get_comments()
 
         self.pickup_date = parse_date(data["PickupDate"])
         self.pickup_location = " ".join(filter(None, [
@@ -62,7 +62,7 @@ class Order(Base):
         self.dropoff_proxy_phone = data["DropoffPersonPhone"].strip()
 
         self.item_count = self._parse_int(data["ItemCount"])
-        self.items = "[]"  # Initialize empty JSON list string
+        self.items = []
 
     def _format_phone(self, raw_phone):
         # Format a US phone number as (xxx) xxx-xxxx
@@ -100,9 +100,9 @@ class Order(Base):
     def _get_comments(self):
         comments = []
         if not config.IS_DROPOFF_SEASON and self.pickup_proxy_name and self.pickup_proxy_phone:
-            comments.append(f"Call Proxy {self.pickup_proxy_name} {self.pickup_proxy_phone}")
+            comments.append(f"Call Proxy {self.pickup_proxy_name} {self.pickup_proxy_phone}.")
         if config.IS_DROPOFF_SEASON and self.dropoff_proxy_name and self.dropoff_proxy_phone:
-            comments.append(f"Call Proxy {self.dropoff_proxy_name} {self.dropoff_proxy_phone}")
+            comments.append(f"Call Proxy {self.dropoff_proxy_name} {self.dropoff_proxy_phone}.")
         return comments
 
     def set_truck(self, truck_number, driver):
