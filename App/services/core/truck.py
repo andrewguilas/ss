@@ -22,7 +22,7 @@ def remove_truck(truck_id):
     try:
         truck = session.query(Truck).filter(Truck.truck_id == truck_id).first()
         if not truck:
-            raise ValueError(f"Truck with ID {truck_id} not found")
+            raise ValueError(f"Truck {truck_id} not found")
 
         session.delete(truck)
         session.commit()

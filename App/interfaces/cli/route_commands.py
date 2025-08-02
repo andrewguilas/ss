@@ -23,8 +23,17 @@ def add_route(subargs):
         print(f"Failed to add route for {date} with driver {driver_name or 'N/A'} for truck {truck_id or 'N/A'}: {e}")
 
 def remove_route(subargs):
-    # route_id
-    pass
+    if len(subargs) == 0:
+        print("Usage: route remove <route_id>")
+        return
+
+    route_id = subargs[0]
+
+    try:
+        route_service.remove_route(route_id=route_id)
+        print(f"Successfully removed route {route_id}")
+    except Exception as e:
+        print(f"Failed to remove route {route_id}: {e}")
 
 def list_routes(subargs):
     date = None

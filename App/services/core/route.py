@@ -2,6 +2,7 @@ from app.models.route import Route
 from app.models.route import Truck
 import app.services.infra.db as db_service
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 
 def add_route(date, driver_name=None, comments=None, truck_id=None):
     session = db_service.get_session()
@@ -25,7 +26,20 @@ def add_route(date, driver_name=None, comments=None, truck_id=None):
     finally:
         session.close()
 
-from sqlalchemy.orm import joinedload
+def remove_route(route_id):
+    session = db_service.get_session()
+    try:
+        route = session.query(Route).filter(Route.route_id == route_id).first()
+        if not route:
+            raise ValueError(f"Route {route_id} not found")
+
+        session.delete(route)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 def list_routes(date=None):
     session = db_service.get_session()
