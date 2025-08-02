@@ -35,7 +35,7 @@ def _generate_title(date, orders):
     driver = "Andrew" # orders[0].driver
     return f"{date_text} - Truck {truck_number}/{max_truck_number} ({driver}) - {orders_count} order(s)"
 
-def print_order_list(date):
+def print_order_list(date, truck_number):
     orders = db_service.get_orders(campus=config.CAMPUS, min_item_count=1, date=date)
     if len(orders) == 0:
         print("No orders found")

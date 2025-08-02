@@ -61,16 +61,16 @@ def main():
     # Original global commands
     match command:
         case "upload":
-            order_list_commands.upload_order_list(subargs)
+            order_list_commands.upload_order_list(args)
 
         case "generate":
-            order_list_commands.generate_order_list(subargs)
+            order_list_commands.generate_order_list(args)
 
         case "print":
-            order_list_commands.print_order_list(subargs)
+            order_list_commands.print_order_list(args)
 
         case "help":
-            global_commands.show_commands(subargs)
+            global_commands.show_commands(args)
 
         case _:
             print(f"Unknown command: {command}. Run 'help' for options.")
