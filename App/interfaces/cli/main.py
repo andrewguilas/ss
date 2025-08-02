@@ -1,9 +1,9 @@
 import sys
 from app.utils.date_utils import parse_date
-import truck_commands
-import route_commands
-import order_commands
-import order_list_commands
+import app.interfaces.cli.truck_commands as truck_commands
+import app.interfaces.cli.route_commands as route_commands
+import app.interfaces.cli.order_commands as order_commands
+import app.interfaces.cli.order_list_commands as order_list_commands
 
 def main():
     if len(sys.argv) < 2:
@@ -25,13 +25,13 @@ def main():
         if command == "truck":
             match subcommand:
                 case "add":
-                    print("truck add not implemented yet")
+                    truck_commands.add_truck(subargs)
                 case "remove":
-                    print("truck remove not implemented yet")
+                    truck_commands.remove_truck(subargs)
                 case "assign":
-                    print("truck assign not implemented yet")
+                    truck_commands.assign_truck_to_route(subargs)
                 case "list":
-                    print("truck list not implemented yet")
+                    truck_commands.list_trucks(subargs)
                 case _:
                     print(f"Unknown truck subcommand: {subcommand}")
 

@@ -14,8 +14,8 @@ class Truck(Base):
     routes = relationship("Route", back_populates="truck")
 
     def __init__(self, model="", comments=""):
-        self.model = model.strip()
-        self.comments = comments.strip()
+        self.model = model and model.strip() or None
+        self.comments = model and comments.strip() or None
 
     def __repr__(self):
         return f"Truck {self.truck_id} - {self.model}, {len(self.routes)} route(s)"
