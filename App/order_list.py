@@ -64,9 +64,3 @@ def generate_order_list(pdf_file_name, date, truck_number):
 
     file_service.convert_xlsx_to_pdf(xlsx_file_name, pdf_file_name)
     return len(orders)
-
-def set_truck(order_id, truck_number, driver):
-    order = db_service.get_orders(order_id)[0]
-    order.set_truck(truck_number, driver)
-    db_service.add_or_update_order(order)
-    print(f"Set order {order_id} to truck {truck_number} ({driver})")

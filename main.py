@@ -2,6 +2,8 @@ import sys
 import app.order_list as order_list
 from app.utils.date_utils import parse_date
 
+# Order List
+
 def upload_order_list(csv_file_name):
     print(f"Inputting orders from {csv_file_name}...")
     orders_count = order_list.upload_order_list(csv_file_name)
@@ -15,8 +17,29 @@ def generate_order_list(pdf_file_name, date, truck_number=1):
     orders_count = order_list.generate_order_list(pdf_file_name, date, truck_number)
     print(f"Successfully generated order list with {orders_count} order(s) for {date} in {pdf_file_name}")
 
-def set_truck(order_id, truck_number, driver):
-    order_list.set_truck(order_id, truck_number, driver)
+# Truck
+
+def add_truck(model='', comments=''):
+    pass
+
+def assign_truck_to_route(truck_id, route_id):
+    pass
+
+def remove_truck(truck_id):
+    pass
+
+# Route
+
+def add_route(date, driver_name='', comments=''):
+    pass
+
+def assign_route_to_order(route_id, order_id):
+    pass
+
+def remove_route(route_id):
+    pass
+
+# Main
 
 def main():
     if len(sys.argv) < 2:
