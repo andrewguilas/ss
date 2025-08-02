@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Integer, Date, Text
+from sqlalchemy import Column, String, Integer, Date, Text, ForeignKey
+from sqlalchemy.orm import relationship
 from app.database import Base
 from app.services.openai_service import ask_openai
 from app.utils.date_utils import parse_date
@@ -8,26 +9,25 @@ class Order(Base):
     __tablename__ = 'orders'
 
     order_id = Column(String, primary_key=True, index=True)
-    campus = Column(String(100))
-    name = Column(String(200))
-    phone = Column(String(20))
-    pronunciation = Column(String(200))
-    comments = Column(String(512))
+    campus = Column(String(64))
+    name = Column(String(64))
+    phone = Column(String(16))
+    pronunciation = Column(String(64))
+    comments = Column(Text)
 
     pickup_date = Column(Date)
     pickup_location = Column(Text)
-    pickup_proxy_name = Column(String(200))
-    pickup_proxy_phone = Column(String(20))
+    pickup_proxy_name = Column(String(64))
+    pickup_proxy_phone = Column(String(16))
 
     dropoff_date = Column(Date)
     dropoff_location = Column(Text)
-    dropoff_proxy_name = Column(String(200))
-    dropoff_proxy_phone = Column(String(20))
+    dropoff_proxy_name = Column(String(64))
+    dropoff_proxy_phone = Column(String(16))
 
-    item_count = Column(Integer)
     items = Column(Text, default="[]") # store items as JSON text
-    truck_number = Column(String(1))
-    driver = Column(String(200))
+    route_id = Column(Integer, ForeignKey("routes.route_id", ondelete="SET NULL"), nullable=True)
+    route = relationship("Route", back_populates="orders")
 
     def __init__(self, data):
         self.order_id = data["OrderID"].strip()
