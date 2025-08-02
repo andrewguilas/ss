@@ -1,56 +1,9 @@
 import sys
-import app.services.order_list as order_list
 from app.utils.date_utils import parse_date
-
-# Order List
-
-def upload_order_list(csv_file_name):
-    print(f"Inputting orders from {csv_file_name}...")
-    orders_count = order_list.upload_order_list(csv_file_name)
-    print(f"Successfully inputted and saved {orders_count} order(s) from {csv_file_name}")
-
-def generate_order_list(pdf_file_name, date):
-    print(f"Generating order list for {date} to {pdf_file_name}...")
-    orders_count = order_list.generate_order_list(pdf_file_name, date)
-    print(f"Successfully generated order list with {orders_count} order(s) for {date} in {pdf_file_name}")
-
-# Truck
-
-def add_truck(model='', comments=''):
-    pass
-
-def remove_truck(truck_id):
-    pass
-
-def assign_truck_to_route(truck_id, route_id):
-    pass
-
-def list_trucks():
-    pass
-
-# Route
-
-def add_route(date, driver_name='', comments=''):
-    pass
-
-def remove_route(route_id):
-    pass
-
-def assign_route_to_order(route_id, order_id):
-    pass
-
-def list_routes(date=None):
-    pass
-
-# Order
-
-def add_item(order_id, item_name):
-    pass
-
-def list_orders(date):
-    order_list.print_order_list(date)
-
-# Main
+import truck_commands
+import route_commands
+import order_commands
+import order_list_commands
 
 def main():
     if len(sys.argv) < 2:
@@ -112,7 +65,7 @@ def main():
             if len(args) < 1:
                 print("Usage: upload <filename>")
                 return
-            upload_order_list(args[0])
+            order_list_commands.upload_order_list(args[0])
 
         case "generate":
             if len(args) < 2:
@@ -123,24 +76,24 @@ def main():
             except Exception:
                 print("Invalid date format. Use YYYY-MM-DD.")
                 return
-            generate_order_list(args[0], date)
+            order_list_commands.generate_order_list(args[0], date)
 
-        case "list_orders":
+        case "print":
             if len(args) < 1:
-                print("Usage: list_orders <YYYY-MM-DD> [truck_number]")
+                print("Usage: print <YYYY-MM-DD> [truck_number]")
                 return
             try:
                 date = parse_date(args[0])
             except Exception:
                 print("Invalid date format. Use YYYY-MM-DD.")
                 return
-            list_orders(date)
+            order_list_commands.print_order_list(date)
 
         case "help":
             print("Commands:")
             print("  upload <csv_file_name>")
             print("  generate <pdf_file_name> <YYYY-MM-DD> [truck_number]")
-            print("  list_orders <YYYY-MM-DD> [truck_number]")
+            print("  print <YYYY-MM-DD> [truck_number]")
             print("  truck <subcommand> [args...]")
             print("  route <subcommand> [args...]")
             print("  order <subcommand> [args...]")
