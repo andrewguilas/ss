@@ -1,4 +1,5 @@
 CAMPUS="University of Virginia"
+IS_DROPOFF_SEASON = True
 
 OPENAI_MODEL="gpt-4.1-nano"
 SQLALCHEMY_DATABASE_URL="sqlite:///./data/db/orders.db"
