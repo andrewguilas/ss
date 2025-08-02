@@ -42,24 +42,24 @@ class Order(Base):
         self.comments = self._get_comments()
 
         self.pickup_date = parse_date(data["PickupDate"])
-        self.pickup_location = " ".join(filter(None, [
+        self.pickup_location = self._format_location(
             data["PickupLocation"].strip(), 
             data["PickupDormRoomNumber"].strip(), 
             data["PickupDormRoomLetter"].strip(), 
             data["PickupAddress"].strip(), 
             data["PickupAddressLine2"].strip()
-        ]))
+        )
         self.pickup_proxy_name = data["PickupPersonName"].strip()
         self.pickup_proxy_phone = data["PickupPersonPhone"] and self._format_phone(data["PickupPersonPhone"])
 
         self.dropoff_date = parse_date(data["DropoffDate"])
-        self.dropoff_location = " ".join(filter(None, [
+        self.dropoff_location = self._format_location(
             data["DropoffLocation"].strip(), 
             data["DropoffDormRoomNumber"].strip(), 
             data["DropoffDormRoomLetter"].strip(), 
             data["DropoffAddressLine1"].strip(), 
             data["DropoffAddressLine2"].strip()
-        ]))
+        )
         self.dropoff_proxy_name = data["DropoffPersonName"].strip() 
         self.dropoff_proxy_phone = data["DropoffPersonPhone"] and self._format_phone(data["DropoffPersonPhone"])
 
@@ -82,6 +82,10 @@ class Order(Base):
         line_number = digits[6:]
 
         return f"({area_code}) {prefix}-{line_number}"
+
+    def _format_location(self, *args):
+        parts = [part.strip() for part in args if part and part.strip()]
+        return " ".join(parts)
 
     def _parse_int(self, value):
         try:
