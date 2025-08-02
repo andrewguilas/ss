@@ -25,7 +25,9 @@ class Order(Base):
     dropoff_proxy_name = Column(String(64))
     dropoff_proxy_phone = Column(String(16))
 
+    item_count = Column(Integer)
     items = Column(Text, default="[]") # store items as JSON text
+    
     route_id = Column(Integer, ForeignKey("routes.route_id", ondelete="SET NULL"), nullable=True)
     route = relationship("Route", back_populates="orders")
 
@@ -38,33 +40,31 @@ class Order(Base):
         self.comments = ". ".join(self._get_comments())
 
         self.pickup_date = parse_date(data["PickupDate"])
-        self.pickup_location = " ".join([
+        self.pickup_location = " ".join(filter(None, [
             data["PickupLocation"].strip(), 
             data["PickupDormRoomNumber"].strip(), 
             data["PickupDormRoomLetter"].strip(), 
             data["PickupAddress"].strip(), 
             data["PickupAddressLine2"].strip()
-        ])
+        ]))
         self.pickup_proxy_name = data["PickupPersonName"].strip()
         self.pickup_proxy_phone = data["PickupPersonPhone"].strip()
 
         self.dropoff_date = parse_date(data["DropoffDate"])
-        self.dropoff_location = " ".join([
+        self.dropoff_location = " ".join(filter(None, [
             data["DropoffLocation"].strip(), 
             data["DropoffDormRoomNumber"].strip(), 
             data["DropoffDormRoomLetter"].strip(), 
             data["DropoffAddressLine1"].strip(), 
             data["DropoffAddressLine2"].strip()
-        ])
+        ]))
         self.dropoff_proxy_name = data["DropoffPersonName"].strip() 
         self.dropoff_proxy_phone = data["DropoffPersonPhone"].strip()
 
         self.item_count = self._parse_int(data["ItemCount"])
         self.items = "[]"  # Initialize empty JSON list string
-        self.truck_number = 1
-        self.driver = "Driver TBD"
 
-    def format_phone_number(raw_phone):
+    def _format_phone(self, raw_phone):
         # Format a US phone number as (xxx) xxx-xxxx
 
         digits = ''.join(filter(str.isdigit, str(raw_phone))) # Remove all non-digit characters
