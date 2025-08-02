@@ -56,5 +56,15 @@ def list_routes(subargs):
         print(f"Failed to list routes: {e}")
 
 def assign_route_to_truck(subargs):
-    # route_idm, truck_id
-    pass
+    if len(subargs) < 2:
+        print("Usage: route assign <route_id> <truck_id>")
+        return
+
+    route_id = int(subargs[0])
+    truck_id = int(subargs[1])
+
+    try:
+        route_service.assign_route_to_truck(route_id=route_id, truck_id=truck_id)
+        print(f"Successfully assigned route {route_id} to truck {truck_id}")
+    except Exception as e:
+        print(f"Failed to assign route {route_id} to truck {truck_id}: {e}")

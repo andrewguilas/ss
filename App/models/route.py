@@ -29,6 +29,7 @@ class Route(Base):
         self.truck = truck
 
     def __repr__(self):
-        truck_model = self.truck.model if self.truck else "Truck TBD"
+        truck_id = self.truck.truck_id if self.truck else "TBD"
+        truck_model = self.truck.model if self.truck and self.truck.model else "TBD"
         driver_name = self.driver_name or "Driver TBD"
-        return f"Route {self.route_id} - {self.date}, {truck_model}, {driver_name}, {len(self.orders)} order(s)"
+        return f"Route {self.route_id} - {self.date}, truck {truck_id}, truck model {truck_model}, driver {driver_name}, {len(self.orders)} order(s)"

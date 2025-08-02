@@ -56,3 +56,33 @@ def list_routes(date=None):
         return query.order_by(Route.route_id).all()
     finally:
         session.close()
+
+def assign_route_to_truck(route_id, truck_id):
+    session = db_service.get_session()
+    try:
+        route = session.query(Route).filter(Route.route_id == route_id).first()
+        if not route:
+            raise ValueError(f"Route {route_id} not found")
+
+        truck = session.query(Truck).filter(Truck.truck_id == truck_id).first()
+        if not truck:
+            raise ValueError(f"Truck {truck_id} not found")
+
+        existing_route = session.query(Route).filter(
+            Route.truck_id == truck_id,
+            Route.date == route.date,
+            Route.route_id != route_id  # exclude current route
+        ).first()
+        if existing_route:
+            raise ValueError(f"Truck {truck_id} is already assigned to route {existing_route.route_id} on {route.date}")
+
+        if route.truck == truck:
+            raise ValueError(f"Route {route_id} is already assigned to {truck_id}")
+
+        route.truck = truck
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
