@@ -9,8 +9,8 @@ def upload_order_list(args):
     csv_file_name = args[0]
 
     print(f"Inputting orders from {csv_file_name}...")
-    orders_count = order_list.upload_order_list(csv_file_name)
-    print(f"Successfully inputted and saved {orders_count} order(s) from {csv_file_name}")
+    orders_count, routes_created_count, trucks_created_count = order_list.upload_order_list(csv_file_name)
+    print(f"Successfully inputted and saved {orders_count} order(s) from {csv_file_name}.\nAutomatically created {routes_created_count} routes.\nAutomatically created {trucks_created_count} trucks.")
 
 def generate_order_list(args):
     if len(args) < 2:

@@ -17,7 +17,7 @@ def add_route(subargs):
     comments = subargs[2] if len(subargs) >= 3 else None
 
     try:
-        new_route = route_service.add_route(date=date, driver_name=driver_name, comments=comments, truck_id=truck_id)
+        new_route, trucks_created_count = route_service.add_route(date=date, driver_name=driver_name, comments=comments, truck_id=truck_id)
         print(f"Successfully added route {new_route.route_id} for {date} with driver {driver_name or 'N/A'} for truck {truck_id or 'N/A'}")
     except Exception as e:
         print(f"Failed to add route for {date} with driver {driver_name or 'N/A'} for truck {truck_id or 'N/A'}: {e}")

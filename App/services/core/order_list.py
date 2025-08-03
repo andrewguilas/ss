@@ -1,25 +1,70 @@
 from tabulate import tabulate
 import app.services.infra.file_io as file_service
 import app.services.infra.db as db_service
+import app.services.core.route as route_service
 import app.utils.date_utils as date_utils
 import app.models.order as order_model
+import app.models.route as route_model
 import app.config as config
 import os
+from sqlalchemy.orm import joinedload
+from enum import Enum
+
+class Status(Enum):
+    ASSIGNED = "assigned"
+    ASSIGNED_AND_GENERATED = "assigned_and_generated"
 
 def upload_order_list(csv_file_name):
+    routes_created_count = 0
+    trucks_created_count = 0
+
     rows = file_service.get_rows_from_csv(csv_file_name)
     session = db_service.get_session()
     try:
-        for row in rows:
+        rows_count = len(rows)
+        for current_row_index, row in enumerate(rows):
+            status = None
+
             order = order_model.Order(row)
-            session.merge(order)
+            if order.campus != config.CAMPUS:
+                print(f"Skipped order because campus != {config.CAMPUS}")
+                continue
+            elif order.item_count == 0:
+                print(f"Skipped order because item count is 0")
+                continue
+
+            if order.dropoff_date:
+                route = session.query(route_model.Route).filter(
+                    route_model.Route.date == order.dropoff_date
+                ).first()
+                if route:
+                    status = Status.ASSIGNED
+                else:
+                    # if the order has a dropoff date,
+                    # automatically assign it a default route
+                    route, is_truck_created = route_service.add_route(date=order.dropoff_date, session=session)
+                    trucks_created_count += 1 if is_truck_created else 0
+                    status = Status.ASSIGNED_AND_GENERATED
+                order.route = route
+
+            session.add(order)
+
+            if status == Status.ASSIGNED:
+                print(f"Automatically assigned route {route.route_id} to order {order.order_id}")
+            elif status == Status.ASSIGNED_AND_GENERATED:
+                print(f"Automatically generated route {route.route_id} for {order.dropoff_date} and assigned to order {order.order_id}")
+                routes_created_count += 1
+
+            progress_percentage = round(current_row_index / rows_count * 100, 2)
+            print(f"Added order {order.order_id}. {progress_percentage}% completed.")
+            
         session.commit()
     except Exception as e:
         session.rollback()
         raise e
     finally:
         session.close()
-    return len(rows)
+    return len(rows), routes_created_count, trucks_created_count
 
 def _extract_order_fields(order):
     return {
@@ -36,12 +81,17 @@ def _extract_order_fields(order):
     }
 
 def _generate_title(date, orders):
+    if not orders:
+        return "No orders"
+
+    route = orders[0].route
+    truck_number = 1 # _calculate_truck_number() TODO
+    max_truck_number = 1 # _calculate_max_truck_number() TODO
+    driver = route.driver_name or "Unknown"
+
     date_text = date_utils.format_date_short(date)
-    truck_number = 1 # temp
-    max_truck_number = 1  # temp
     orders_count = len(orders)
-    driver = "Andrew"  # temp
-    return f"{date_text} - Truck {truck_number}/{max_truck_number} ({driver}) - {orders_count} order(s)"
+    return f"{date_text} - Truck {truck_number} (Driver: {driver}) - {orders_count} order(s)"
 
 def print_order_list(date, truck_number=None):
     session = db_service.get_session()
@@ -52,10 +102,9 @@ def print_order_list(date, truck_number=None):
         else:
             query = query.filter(order_model.Order.pickup_date == date)
 
-        query = query.filter(order_model.Order.campus == config.CAMPUS)
-        query = query.filter(order_model.Order.item_count >= 1)
-
-        orders = query.order_by(order_model.Order.order_id).all()
+        orders = query.options(joinedload(order_model.Order.route).joinedload(route_model.Route.truck))\
+              .order_by(order_model.Order.order_id)\
+              .all()
         if not orders:
             print("No orders found")
             return
@@ -77,10 +126,9 @@ def generate_order_list(pdf_file_name, date):
         else:
             query = query.filter(order_model.Order.pickup_date == date)
 
-        query = query.filter(order_model.Order.campus == config.CAMPUS)
-        query = query.filter(order_model.Order.item_count >= 1)
-
-        orders = query.order_by(order_model.Order.order_id).all()
+        orders = query.options(joinedload(order_model.Order.route).joinedload(route_model.Route.truck))\
+              .order_by(order_model.Order.order_id)\
+              .all()
         if not orders:
             print("No orders found")
             return

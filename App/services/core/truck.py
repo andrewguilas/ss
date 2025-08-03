@@ -3,20 +3,28 @@ import app.services.infra.db as db_service
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
 
-def add_truck(model="", comments=""):
+def add_truck(model="", comments="", session=None):
+    is_own_session = session is None
+    if is_own_session:
+        session = db_service.get_session()
+
     new_truck = Truck(model, comments)
 
-    session = db_service.get_session()
     try:
         session.add(new_truck)
-        session.commit()
-        session.refresh(new_truck)  # Ensure truck_id is populated
+        if is_own_session: # only close session if this method created it
+            session.commit()
+            session.refresh(new_truck)
+        else:
+            session.flush()
         return new_truck
     except SQLAlchemyError:
-        session.rollback()
+        if is_own_session:
+            session.rollback()
         raise
     finally:
-        session.close()
+        if is_own_session:
+            session.close()
 
 def remove_truck(truck_id):
     session = db_service.get_session()
