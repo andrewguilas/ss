@@ -2,6 +2,7 @@ from app.models.route import Route
 from app.models.route import Truck
 import app.services.infra.db as db_service
 import app.services.core.truck as truck_service
+from app.utils.debug_utils import print_message
 from sqlalchemy.orm import joinedload
 from enum import Enum
 
@@ -38,9 +39,9 @@ def add_route(date, driver_name=None, comments=None, truck_id=None, session=None
         session.flush()
 
         if status == Status.ASSIGNED:
-            print(f"Automatically assigned truck {truck.truck_id} to route {new_route.route_id}")
+            print_message(f"Automatically assigned truck {truck.truck_id} to route {new_route.route_id}")
         elif status == Status.ASSIGNED_AND_GENERATED:
-            print(f"Automatically generated truck {truck.truck_id} for route {new_route.route_id}")
+            print_message(f"Automatically generated truck {truck.truck_id} for route {new_route.route_id}")
             trucks_created_count += 1
 
         if is_own_session:

@@ -4,6 +4,7 @@ IS_DROPOFF_SEASON = True
 OPENAI_MODEL="gpt-4.1-nano"
 DB_FILE_NAME="data/db/database.db"
 SQLALCHEMY_DATABASE_URL=f"sqlite:///./{DB_FILE_NAME}"
+IS_DEBUG=False
 
 PDF_ORIENTATION = 2 # landscape
 PDF_LEFT_MARGIN = 0.25

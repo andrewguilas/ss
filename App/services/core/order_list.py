@@ -3,12 +3,14 @@ import app.services.infra.file_io as file_service
 import app.services.infra.db as db_service
 import app.services.core.route as route_service
 import app.utils.date_utils as date_utils
+from app.utils.debug_utils import print_message
 import app.models.order as order_model
 import app.models.route as route_model
 import app.config as config
 import os
 from sqlalchemy.orm import joinedload
 from enum import Enum
+from alive_progress import alive_bar
 
 class Status(Enum):
     ASSIGNED = "assigned"
@@ -22,42 +24,45 @@ def upload_order_list(csv_file_name):
     session = db_service.get_session()
     try:
         rows_count = len(rows)
-        for current_row_index, row in enumerate(rows):
-            status = None
+        with alive_bar(rows_count, title="Uploading Orders") as bar:
+            for current_row_index, row in enumerate(rows):
+                status = None
 
-            order = order_model.Order(row)
-            if order.campus != config.CAMPUS:
-                print(f"Skipped order because campus != {config.CAMPUS}")
-                continue
-            elif order.item_count == 0:
-                print(f"Skipped order because item count is 0")
-                continue
+                order = order_model.Order(row)
+                if order.campus != config.CAMPUS:
+                    print_message(f"Skipped order because campus != {config.CAMPUS}")
+                    bar()
+                    continue
+                elif order.item_count == 0:
+                    print_message(f"Skipped order because item count is 0")
+                    bar()
+                    continue
 
-            if order.dropoff_date:
-                route = session.query(route_model.Route).filter(
-                    route_model.Route.date == order.dropoff_date
-                ).first()
-                if route:
-                    status = Status.ASSIGNED
-                else:
-                    # if the order has a dropoff date,
-                    # automatically assign it a default route
-                    route, is_truck_created = route_service.add_route(date=order.dropoff_date, session=session)
-                    trucks_created_count += 1 if is_truck_created else 0
-                    status = Status.ASSIGNED_AND_GENERATED
-                order.route = route
+                if order.dropoff_date:
+                    route = session.query(route_model.Route).filter(
+                        route_model.Route.date == order.dropoff_date
+                    ).first()
+                    if route:
+                        status = Status.ASSIGNED
+                    else:
+                        # if the order has a dropoff date,
+                        # automatically assign it a default route
+                        route, is_truck_created = route_service.add_route(date=order.dropoff_date, session=session)
+                        trucks_created_count += 1 if is_truck_created else 0
+                        status = Status.ASSIGNED_AND_GENERATED
+                    order.route = route
 
-            session.add(order)
+                session.add(order)
 
-            if status == Status.ASSIGNED:
-                print(f"Automatically assigned route {route.route_id} to order {order.order_id}")
-            elif status == Status.ASSIGNED_AND_GENERATED:
-                print(f"Automatically generated route {route.route_id} for {order.dropoff_date} and assigned to order {order.order_id}")
-                routes_created_count += 1
+                if status == Status.ASSIGNED:
+                    print_message(f"Automatically assigned route {route.route_id} to order {order.order_id}")
+                elif status == Status.ASSIGNED_AND_GENERATED:
+                    print_message(f"Automatically generated route {route.route_id} for {order.dropoff_date} and assigned to order {order.order_id}")
+                    routes_created_count += 1
 
-            progress_percentage = round(current_row_index / rows_count * 100, 2)
-            print(f"Added order {order.order_id}. {progress_percentage}% completed.")
-            
+                print_message(f"Added order {order.order_id}")
+                bar()
+                
         session.commit()
     except Exception as e:
         session.rollback()
