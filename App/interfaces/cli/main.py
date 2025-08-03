@@ -13,7 +13,7 @@ def main():
     command = sys.argv[1].lower()
     args = sys.argv[2:]
 
-    if command in ("truck", "route", "order"):
+    if command in ("order_list", "truck", "route", "order"):
         if len(args) == 0:
             print(f"Usage: {command} <subcommand> [arguments...]")
             return
@@ -21,7 +21,21 @@ def main():
         subcommand = args[0].lower()
         subargs = args[1:]
 
-        if command == "truck":
+        if command == "order_list":
+            match subcommand:
+                case "upload":
+                    order_list_commands.upload_order_list(subargs)
+
+                case "generate":
+                    order_list_commands.generate_order_list(subargs)
+
+                case "print":
+                    order_list_commands.print_order_list(subargs)
+
+                case _:
+                    print(f"Unknown order_list subcommand: {subcommand}")
+
+        elif command == "truck":
             match subcommand:
                 case "add":
                     truck_commands.add_truck(subargs)
@@ -58,17 +72,7 @@ def main():
 
         return
 
-    # Original global commands
     match command:
-        case "upload":
-            order_list_commands.upload_order_list(args)
-
-        case "generate":
-            order_list_commands.generate_order_list(args)
-
-        case "print":
-            order_list_commands.print_order_list(args)
-
         case "help":
             global_commands.show_commands(args)
 

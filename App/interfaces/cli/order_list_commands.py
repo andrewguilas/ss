@@ -34,13 +34,15 @@ def print_order_list(args):
     if len(args) < 1:
         print("Usage: print <YYYY-MM-DD> [truck_number]")
         return
-    
-    truck_number = args[1]
 
     try:
         date = parse_date(args[0])
     except Exception:
         print("Invalid date format. Use YYYY-MM-DD.")
         return
+
+    truck_number = None
+    if len(args) == 2:
+        truck_number = args[1]
 
     order_list.print_order_list(date, truck_number)
