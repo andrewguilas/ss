@@ -45,14 +45,14 @@ def main():
                 case _:
                     print(f"Unknown route subcommand: {subcommand}")
 
-        elif command == "route":
+        elif command == "order":
             match subcommand:
                 case "assign":
-                    print("order assign not implemented yet")
-                case "add_item":
-                    print("order add_item not implemented yet")
-                case "info":
-                    print("order info not implemented yet")
+                    order_commands.assign_order_to_route(subargs)
+                case "list":
+                    order_commands.list_orders(subargs)
+                case "details":
+                    order_commands.details(subargs)
                 case _:
                     print(f"Unknown order subcommand: {subcommand}")
 
