@@ -37,3 +37,10 @@ def list_orders(date=None):
         return query.order_by(Order.order_id).all()
     finally:
         session.close()
+
+def get_order_details(order_id):
+    session = db_service.get_session()
+    try:
+        return session.query(Order).filter(Order.order_id == order_id).first()
+    finally:
+        session.close() 
