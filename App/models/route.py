@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, ForeignKey, UniqueConstraint, Date
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.services.infra.db import Base
 from app.models.truck import Truck
 
 class Route(Base):

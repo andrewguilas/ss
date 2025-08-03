@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, Date, Text, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database import Base
+from app.services.infra.db import Base
 from app.services.infra.openai import ask_openai
 from app.utils.date_utils import parse_date
 from app.models.route import Route

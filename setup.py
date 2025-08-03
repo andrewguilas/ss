@@ -1,6 +1,6 @@
 import os
 import shutil
-from app.database import Base, engine
+from app.services.infra.db import Base, engine
 from sqlalchemy import event
 import app.config as config
 
@@ -28,11 +28,12 @@ def delete_pycache_folders(root_path):
             print(f"Deleted {pycache_path}")
 
 def init_db():
+    print("Starting setup...")
     delete_file_if_exists(config.DB_FILE_NAME)
     delete_pycache_folders("app/")
     Base.metadata.create_all(bind=engine)
     print("Database initialized")
-    print("Setup complete")
+    print("Successfully completed setup")
 
 if __name__ == "__main__":
     init_db()
